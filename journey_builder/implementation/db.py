@@ -2,15 +2,18 @@ import pandas as pd
 import numpy as np
 from sqlalchemy.engine import create_engine
 import trino
+from dotenv import load_dotenv
+
+load_dotenv(override=True)
 
 
-trino_host = "trinoprod.octro.com"  # Trino server hostname/IP
-trino_port = "8143"                         # Trino port
-trino_catalog = "trinity_sql"                     # Catalog
-trino_schema = "octro_crm"                    # Schema
-trino_table = "campaign_auto_report_detail"                   # Table
-trino_user = "superset"                      # Username
-trino_password = "superset123"               # Password
+trino_host = os.getenv("TRINO_HOST") 
+trino_port = os.getenv("TRINO_PORT")   
+trino_catalog = os.getenv("TRINO_CATALOG")
+trino_schema = os.getenv("TRINO_SCHEMA")
+trino_table = os.getenv("TRINO_TABLE")
+trino_user = os.getenv("TRINO_USER")
+trino_password = os.getenv("TRINO_PASSWORD")
 
 # Create SQLAlchemy engine for Trino
 
