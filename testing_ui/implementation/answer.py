@@ -16,14 +16,21 @@ load_dotenv(override=True)
 
 
 
-GEMINI_BASE_URL = "https://generativelanguage.googleapis.com/v1beta/openai/"
-google_api_key = os.getenv("GOOGLE_API_KEY")
-client = OpenAI(base_url=GEMINI_BASE_URL, api_key=google_api_key)
+#   Gemini Conection
+# MODEL = "gemini-2.5-flash"
+# GEMINI_BASE_URL = "https://generativelanguage.googleapis.com/v1beta/openai/"
+# google_api_key = os.getenv("GOOGLE_API_KEY")
+# client = OpenAI(base_url=GEMINI_BASE_URL, api_key=google_api_key)
+
+#   Open Source Model 
+# MODEL="llama3.2"
 # OLLAMA_BASE_URL = os.getenv("OLLAMA_URL")
 # client = OpenAI(base_url=OLLAMA_BASE_URL, api_key='ollama')
-#MODEL = "gpt-5-nano"
-MODEL = "gemini-2.5-flash"   # fast & cheap
-# MODEL="llama3.2"
+
+# Open AI Model
+MODEL = "gpt-5-nano"
+client=OpenAI()
+
 tools = [
     {
         "type": "function",

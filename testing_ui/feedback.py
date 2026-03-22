@@ -1,7 +1,7 @@
 import mysql.connector
 import pandas as pd
 from datetime import datetime
-
+from implementation.answer import MODEL
 
 def get_connection():
     return mysql.connector.connect(
@@ -39,8 +39,19 @@ def get_feedback_data(role: str):
     """
     trend_df = pd.read_sql(trend_query, conn, params=[role])
 
+
+    model_query = """
+        Select f.model,
+        SUM(CASE WHEN r.name = 'like' THEN 1 ELSE 0 END) AS likes,
+        SUM(CASE WHEN r.name = 'dislike' THEN 1 ELSE 0 END) AS dislikes
+        from user_query f join rating r on f.rating_id = r.id where f.role = %s 
+        group by f.model
+    """
+
+    model_df = pd.read_sql(model_query, conn, params=[role])
+
     conn.close()
-    return totals_df, trend_df
+    return totals_df, trend_df ,model_df
 
 
 def insert_feedback(question: str, rating_name: str, role: str):
@@ -62,13 +73,14 @@ def insert_feedback(question: str, rating_name: str, role: str):
 
     # Insert feedback
     cursor.execute("""
-        INSERT INTO user_query (question, feedback_date, rating_id, role)
-        VALUES (%s, %s, %s, %s)
+        INSERT INTO user_query (question, feedback_date, rating_id, role,model)
+        VALUES (%s, %s, %s, %s,%s)
     """, (
         question,
         datetime.now().date(),   # since column is DATE
         rating_id,
-        role
+        role,
+        MODEL
     ))
 
     conn.commit()

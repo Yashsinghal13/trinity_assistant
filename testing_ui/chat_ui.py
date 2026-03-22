@@ -9,37 +9,37 @@ st.set_page_config(
     layout="wide"
 )
 
-# ---------- Custom CSS ----------
-st.markdown("""
-<style>
-.chat-scroll-area {
-    height: 62vh;
-    overflow-y: auto;
-    padding: 10px 4px 60px 4px;
-}
+# # ---------- Custom CSS ----------
+# st.markdown("""
+# <style>
+# .chat-scroll-area {
+#     height: 62vh;
+#     overflow-y: auto;
+#     padding: 10px 4px 60px 4px;
+# }
 
-.fixed-input {
-    position: fixed;
-    bottom: 80px;
-    left: 0;
-    right: 0;
-    max-width: 1100px;
-    margin: auto;
-    background: var(--background-color);
-    padding-top: 10px;
-}
+# .fixed-input {
+#     position: fixed;
+#     bottom: 80px;
+#     left: 0;
+#     right: 0;
+#     max-width: 1100px;
+#     margin: auto;
+#     background: var(--background-color);
+#     padding-top: 10px;
+# }
 
-.fixed-footer {
-    position: fixed;
-    bottom: 10px;
-    left: 0;
-    right: 0;
-    max-width: 1100px;
-    margin: auto;
-    background: var(--background-color);
-}
-</style>
-""", unsafe_allow_html=True)
+# .fixed-footer {
+#     position: fixed;
+#     bottom: 10px;
+#     left: 0;
+#     right: 0;
+#     max-width: 1100px;
+#     margin: auto;
+#     background: var(--background-color);
+# }
+# </style>
+# """, unsafe_allow_html=True)
 
 
 # ---------- Chat Logic ----------
@@ -163,7 +163,7 @@ def render_chat(role):
 
         st.subheader("User Feedback Analytics")
 
-        totals_df, trend_df = get_feedback_data(st.session_state.role)
+        totals_df, trend_df, model_df = get_feedback_data(st.session_state.role)
 
         if totals_df.empty:
             st.info("No feedback yet.")
@@ -198,3 +198,17 @@ def render_chat(role):
 
         trend_df = trend_df.set_index("feedback_date")
         st.line_chart(trend_df)
+
+        st.subheader("Model-wise Feedback Comparison")
+
+
+        # ================= MODEL WISE COMPARISION CHART =================
+        model_df = model_df.set_index("model")
+
+        # Optional: better labels
+        model_df = model_df.rename(columns={
+            "likes": "👍 Likes",
+            "dislikes": "👎 Dislikes"
+        })
+
+        st.bar_chart(model_df)

@@ -3,6 +3,7 @@ import numpy as np
 from sqlalchemy.engine import create_engine
 import trino
 from dotenv import load_dotenv
+import os
 
 load_dotenv(override=True)
 
