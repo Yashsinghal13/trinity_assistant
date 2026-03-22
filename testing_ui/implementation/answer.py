@@ -1,3 +1,5 @@
+
+
 from pathlib import Path
 from langchain_openai import ChatOpenAI, OpenAIEmbeddings
 from openai import OpenAI
@@ -16,9 +18,12 @@ load_dotenv(override=True)
 
 GEMINI_BASE_URL = "https://generativelanguage.googleapis.com/v1beta/openai/"
 google_api_key = os.getenv("GOOGLE_API_KEY")
-# client = OpenAI(base_url=GEMINI_BASE_URL, api_key=google_api_key)
-OLLAMA_BASE_URL = os.getenv("OLLAMA_URL")
-client = OpenAI(base_url=OLLAMA_BASE_URL, api_key='ollama')
+client = OpenAI(base_url=GEMINI_BASE_URL, api_key=google_api_key)
+# OLLAMA_BASE_URL = os.getenv("OLLAMA_URL")
+# client = OpenAI(base_url=OLLAMA_BASE_URL, api_key='ollama')
+#MODEL = "gpt-5-nano"
+MODEL = "gemini-2.5-flash"   # fast & cheap
+# MODEL="llama3.2"
 tools = [
     {
         "type": "function",
@@ -51,9 +56,7 @@ tools = [
 
 ]
 
-#MODEL = "gpt-5-nano"
-# MODEL = "gemini-2.5-flash"   # fast & cheap
-MODEL="llama3.2"
+
 
 DB_NAME = "/Users/yashsinghal/Documents/trinity_assistant/testing_ui/developer_vector_db"
 
@@ -66,6 +69,9 @@ SYSTEM_PROMPT = """
 You are a knowledgeable, friendly assistant representing the company Octro.
 You are chatting with a user about Trinity CRM Platform.
 If relevant, use the given context to answer any question.
+You can use tools when required.
+Call a tool ONLY if the user explicitly asks for data retrieval.
+If the query is general conversation or explanation, respond normally.
 If you don't know the answer, only Say "I don't know". Please Ask Question related to the Trinity.
 Context:
 {context}
@@ -156,6 +162,9 @@ def answer_question(question: str, history: list[dict] = [],role:str=""):
             result = get_report_by_planner_id(**arguments)
         elif function_name == "listing_all_journey":
             result = listing_all_journey(**arguments)
+        else:
+            print("No Tool Call")
+
 
         second_response = client.chat.completions.create(
             model=MODEL,
